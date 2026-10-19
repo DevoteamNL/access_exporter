@@ -1,3 +1,4 @@
+import os
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -54,7 +55,7 @@ class LanguageTests(unittest.TestCase):
                 self.assertEqual(self.window.table_queue.item(0, 3).text(), status)
                 self.assertEqual(self.window.status_van_rij(0), exporter.STATUS_WACHTRIJ)
                 self.assertEqual(tr("Taal"), label)
-                self.assertEqual(self.window.lbl_doelmap_pad.text(), "/tmp/export")
+                self.assertEqual(self.window.lbl_doelmap_pad.text(), os.path.normpath("/tmp/export"))
                 self.assertEqual(self.window.jobs[0]["tabellen"], ["Klanten"])
 
     def test_converting_translated_queue_and_live_progress(self):
