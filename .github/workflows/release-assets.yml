@@ -1,0 +1,46 @@
+name: Release assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag (e.g. v1.1.0)
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: python -m pip install -r requirements.txt pyinstaller
+
+      - name: Test
+        run: python -m unittest discover -s tests -v
+        env:
+          QT_QPA_PLATFORM: offscreen
+
+      - name: Build single-file executable
+        run: pyinstaller --onefile --windowed --name AccessExporter --hidden-import xlsxwriter access_exporter_pyqt6.py
+
+      - name: Create source zip
+        run: |
+          $version = "${{ inputs.tag }}".TrimStart("v")
+          git archive --format=zip --prefix="access_exporter-$version/" -o "dist/access_exporter-$version-source.zip" HEAD
+
+      - name: Upload to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = "${{ inputs.tag }}".TrimStart("v")
+          gh release upload "${{ inputs.tag }}" "dist/AccessExporter.exe#AccessExporter.exe (Windows 64-bit)" "dist/access_exporter-$version-source.zip#Source code (zip)" --clobber

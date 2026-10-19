@@ -6,7 +6,7 @@ Daarnaast is de "Microsoft Access Driver (*.mdb, *.accdb)" nodig, met dezelfde
 bitness (32/64-bit) als de gebruikte Python-installatie.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 import math
 import os
@@ -24,12 +24,14 @@ import pyodbc
 from PyQt6.QtCore import QSettings, Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QColor, QKeySequence, QShortcut
 from PyQt6.QtWidgets import (
-    QAbstractItemView, QApplication, QCheckBox, QDialog, QDialogButtonBox,
+    QAbstractItemView, QApplication, QCheckBox, QComboBox, QDialog, QDialogButtonBox,
     QFileDialog, QGridLayout, QGroupBox, QHBoxLayout, QHeaderView, QLabel,
     QLineEdit, QListWidget, QListWidgetItem, QMainWindow, QMessageBox,
     QPlainTextEdit, QProgressBar, QPushButton, QRadioButton, QTableWidget,
     QTableWidgetItem, QVBoxLayout, QWidget
 )
+
+from translations import language_support, tr
 
 # =========================================================
 # CONSTANTEN & HULPFUNCTIES
@@ -380,6 +382,7 @@ class TableSelectionDialog(QDialog):
         hoofd_layout.addWidget(buttons)
 
         self.finished.connect(self._sluit_verbinding)
+        language_support.refresh(self)
         self.update_teller()
 
         # Laad direct het voorbeeld van de eerste tabel in
@@ -416,7 +419,7 @@ class TableSelectionDialog(QDialog):
 
     def update_teller(self) -> None:
         aantal = sum(1 for item in self._items() if item.checkState() == Qt.CheckState.Checked)
-        self.lbl_teller.setText(f"{aantal} van {self.list_widget.count()} tabellen geselecteerd")
+        language_support.set_text(self.lbl_teller, f"{aantal} van {self.list_widget.count()} tabellen geselecteerd")
 
     def update_preview(self) -> None:
         huidig_item = self.list_widget.currentItem()
@@ -444,7 +447,7 @@ class TableSelectionDialog(QDialog):
             self._sluit_verbinding()
             self.preview_table.setColumnCount(1)
             self.preview_table.setRowCount(1)
-            self.preview_table.setHorizontalHeaderLabels(["Foutmelding"])
+            self.preview_table.setHorizontalHeaderLabels([tr("Foutmelding")])
             item = QTableWidgetItem(str(e).split("\n")[0])
             item.setToolTip(str(e))
             self.preview_table.setItem(0, 0, item)
@@ -481,8 +484,10 @@ class AccessExporterGUI(QMainWindow):
         self.geselecteerde_tabellen: list[str] = []
         self.jobs: list[dict[str, Any]] = []
         self.worker: ConversionWorker | None = None
+        self.log_entries: list[tuple[str, str]] = []
 
         self.init_ui()
+        language_support.refresh(self)
         self.apply_stylesheet()
         self.laad_instellingen()
         self.controleer_omgeving()
@@ -491,6 +496,18 @@ class AccessExporterGUI(QMainWindow):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         main_layout = QVBoxLayout(central_widget)
+
+        language_layout = QHBoxLayout()
+        language_layout.addStretch()
+        language_label = QLabel("Taal")
+        self.language_combo = QComboBox()
+        for label, code in (("Nederlands", "nl"), ("English", "en"), ("Français", "fr")):
+            self.language_combo.addItem(label, code)
+        language_label.setBuddy(self.language_combo)
+        self.language_combo.currentIndexChanged.connect(self.wijzig_taal)
+        language_layout.addWidget(language_label)
+        language_layout.addWidget(self.language_combo)
+        main_layout.addLayout(language_layout)
 
         # --- STAP 1: Instellingen ---
         gb_settings = QGroupBox("Stap 1: Bestanden, tabellen en formaat instellen")
@@ -616,6 +633,29 @@ class AccessExporterGUI(QMainWindow):
         main_layout.addLayout(action_layout)
         self.log_msg("Applicatie opgestart en klaar voor gebruik.")
 
+    def wijzig_taal(self) -> None:
+        language_support.set_language(self.language_combo.currentData())
+        self.settings.setValue("taal", language_support.language)
+        language_support.refresh(self)
+        self.table_queue.setHorizontalHeaderLabels([
+            tr(source) for source in (
+                "Access-bestand", "Doelbestand(en)", "Voortgang", "Status", "Melding (Statusreden)"
+            )
+        ])
+        for row in range(self.table_queue.rowCount()):
+            for column in (1, 3, 4):
+                item = self.table_queue.item(row, column)
+                if item is not None:
+                    source = item.data(Qt.ItemDataRole.UserRole)
+                    if source is not None:
+                        item.setText(tr(source))
+                        if column == 4:
+                            item.setToolTip(tr(source))
+        self.txt_log.setPlainText("\n".join(
+            f"[{time}] {tr(source)}" for time, source in self.log_entries
+        ))
+        self.txt_log.verticalScrollBar().setValue(self.txt_log.verticalScrollBar().maximum())
+
     # --- THEMA (QSS) Dark Mode ---
     def apply_stylesheet(self) -> None:
         style = """
@@ -633,7 +673,7 @@ class AccessExporterGUI(QMainWindow):
             QPushButton:disabled, QPushButton#accentButton:disabled, QPushButton#successButton:disabled, QPushButton#warningButton:disabled { background-color: #1E1E1E; color: #666666; border: 1px solid #333333; }
             QTableWidget, QListWidget { background-color: #1E1E1E; alternate-background-color: #252525; border: 1px solid #333333; color: #E0E0E0; gridline-color: #333333; }
             QHeaderView::section { background-color: #2D2D2D; padding: 4px; border: 1px solid #333333; font-weight: bold; color: #FFFFFF; }
-            QPlainTextEdit, QLineEdit { background-color: #1E1E1E; border: 1px solid #333333; color: #E0E0E0; }
+            QPlainTextEdit, QLineEdit, QComboBox { background-color: #1E1E1E; border: 1px solid #333333; color: #E0E0E0; }
             QPlainTextEdit { font-family: Consolas, monospace; }
             QLineEdit { padding: 4px; border-radius: 4px; }
             QLineEdit:focus { border-color: #0078D7; }
@@ -646,6 +686,12 @@ class AccessExporterGUI(QMainWindow):
 
     # --- INSTELLINGEN & OMGEVING ---
     def laad_instellingen(self) -> None:
+        language = str(self.settings.value("taal", "nl") or "nl")
+        index = self.language_combo.findData(language)
+        self.language_combo.blockSignals(True)
+        self.language_combo.setCurrentIndex(max(0, index))
+        self.language_combo.blockSignals(False)
+        self.wijzig_taal()
         doelmap = str(self.settings.value("doelmap", "") or "")
         if doelmap and os.path.isdir(doelmap):
             self.zet_doelmap(doelmap)
@@ -654,6 +700,7 @@ class AccessExporterGUI(QMainWindow):
         self.chk_open_map.setChecked(self.settings.value("open_map", True, type=bool))
 
     def bewaar_instellingen(self) -> None:
+        self.settings.setValue("taal", language_support.language)
         self.settings.setValue("doelmap", self.doelmap_pad)
         self.settings.setValue("formaat", "xlsx" if self.rb_xlsx.isChecked() else "csv")
         self.settings.setValue("open_map", self.chk_open_map.isChecked())
@@ -661,7 +708,8 @@ class AccessExporterGUI(QMainWindow):
     def controleer_omgeving(self) -> None:
         if EXCEL_ENGINE is None:
             self.rb_xlsx.setEnabled(False)
-            self.rb_xlsx.setToolTip("Installeer xlsxwriter: pip install xlsxwriter")
+            self.rb_xlsx.setProperty("source_toolTip", "Installeer xlsxwriter: pip install xlsxwriter")
+            self.rb_xlsx.setToolTip(tr("Installeer xlsxwriter: pip install xlsxwriter"))
             self.rb_csv.setChecked(True)
             self.log_msg("⚠ Geen Excel-bibliotheek gevonden; alleen CSV-export beschikbaar (pip install xlsxwriter).")
         elif EXCEL_ENGINE != "xlsxwriter":
@@ -672,30 +720,31 @@ class AccessExporterGUI(QMainWindow):
             melding = (f"De ODBC-driver '{ACCESS_DRIVER}' is niet gevonden.\n\n"
                        f"Installeer de Microsoft Access Database Engine ({bits}-bit, gelijk aan deze Python-installatie).")
             self.log_msg(f"❌ {melding.splitlines()[0]}")
-            QMessageBox.critical(self, "Access-driver ontbreekt", melding)
+            QMessageBox.critical(self, tr("Access-driver ontbreekt"), tr(melding))
 
     # --- ACTIES ---
     def log_msg(self, msg: str) -> None:
         tijd = datetime.now().strftime("%H:%M:%S")
-        self.txt_log.appendPlainText(f"[{tijd}] {msg}")
+        self.log_entries.append((tijd, msg))
+        self.txt_log.appendPlainText(f"[{tijd}] {tr(msg)}")
 
     def zet_tabellen_status(self, tekst: str, kleur: str = KLEUR_OK) -> None:
-        self.lbl_tabellen_status.setText(tekst)
+        language_support.set_text(self.lbl_tabellen_status, tekst)
         self.lbl_tabellen_status.setStyleSheet(f"color: {kleur};")
 
     def zet_doelmap(self, pad: str) -> None:
         self.doelmap_pad = os.path.normpath(pad)
-        self.lbl_doelmap_pad.setText(self.doelmap_pad)
+        language_support.set_text(self.lbl_doelmap_pad, self.doelmap_pad)
 
     def kies_access(self) -> None:
         startmap = str(self.settings.value("laatste_access_map", "") or "")
-        pad, _ = QFileDialog.getOpenFileName(self, "Selecteer Access Database", startmap, "Access Databases (*.accdb *.mdb);;Alle bestanden (*.*)")
+        pad, _ = QFileDialog.getOpenFileName(self, tr("Selecteer Access Database"), startmap, tr("Access Databases (*.accdb *.mdb);;Alle bestanden (*.*)"))
         if not pad:
             return
 
         self.access_pad = os.path.normpath(pad)
         self.settings.setValue("laatste_access_map", os.path.dirname(self.access_pad))
-        self.lbl_access_pad.setText(self.access_pad)
+        language_support.set_text(self.lbl_access_pad, self.access_pad)
         self.log_msg(f"Bestand geselecteerd: {os.path.basename(self.access_pad)}")
 
         if not self.doelmap_pad:
@@ -720,7 +769,7 @@ class AccessExporterGUI(QMainWindow):
 
     def kies_tabellen(self) -> None:
         if not self.access_pad or not self.huidige_db_tabellen:
-            QMessageBox.warning(self, "Let op", "Kies eerst een geldig Access-bestand.")
+            QMessageBox.warning(self, tr("Let op"), tr("Kies eerst een geldig Access-bestand."))
             return
 
         dialog = TableSelectionDialog(self.access_pad, self.huidige_db_tabellen, self.geselecteerde_tabellen, self)
@@ -739,25 +788,25 @@ class AccessExporterGUI(QMainWindow):
         self.lbl_tabellen_status.setToolTip("\n".join(self.geselecteerde_tabellen))
 
     def kies_doelmap(self) -> None:
-        pad = QFileDialog.getExistingDirectory(self, "Kies de doelmap", self.doelmap_pad)
+        pad = QFileDialog.getExistingDirectory(self, tr("Kies de doelmap"), self.doelmap_pad)
         if pad:
             self.zet_doelmap(pad)
             self.log_msg(f"Doelmap ingesteld: {self.doelmap_pad}")
 
     def voeg_toe(self) -> None:
         if not self.access_pad or not self.doelmap_pad:
-            QMessageBox.warning(self, "Incompleet", "Selecteer eerst een Access-bestand en een doelmap.")
+            QMessageBox.warning(self, tr("Incompleet"), tr("Selecteer eerst een Access-bestand en een doelmap."))
             return
         if not self.geselecteerde_tabellen:
-            QMessageBox.warning(self, "Incompleet", "Je hebt geen tabellen geselecteerd.")
+            QMessageBox.warning(self, tr("Incompleet"), tr("Je hebt geen tabellen geselecteerd."))
             return
 
         export_type = "xlsx" if self.rb_xlsx.isChecked() else "csv"
         dubbel = any(j["access_pad"] == self.access_pad and j["doelmap"] == self.doelmap_pad and j["export_type"] == export_type
                      for j in self.jobs)
         if dubbel and QMessageBox.question(
-            self, "Al in wachtrij",
-            "Dit bestand staat al met hetzelfde formaat en dezelfde doelmap in de wachtrij.\nToch nogmaals toevoegen?"
+            self, tr("Al in wachtrij"),
+            tr("Dit bestand staat al met hetzelfde formaat en dezelfde doelmap in de wachtrij.\nToch nogmaals toevoegen?")
         ) != QMessageBox.StandardButton.Yes:
             return
 
@@ -769,7 +818,10 @@ class AccessExporterGUI(QMainWindow):
         self.table_queue.insertRow(row)
         for kolom, tekst in enumerate([access_naam, doel_weergave, "0%", STATUS_WACHTRIJ,
                                        f"{len(self.geselecteerde_tabellen)} tabellen geselecteerd"]):
-            self.table_queue.setItem(row, kolom, QTableWidgetItem(tekst))
+            item = QTableWidgetItem(tr(tekst) if kolom in (1, 3, 4) else tekst)
+            if kolom in (1, 3, 4):
+                item.setData(Qt.ItemDataRole.UserRole, tekst)
+            self.table_queue.setItem(row, kolom, item)
         bron_item = self.table_queue.item(row, 0)
         if bron_item:
             bron_item.setToolTip(self.access_pad)
@@ -788,7 +840,7 @@ class AccessExporterGUI(QMainWindow):
         self.log_msg(f"Toegevoegd aan wachtrij: {access_naam} als {export_type.upper()}")
 
         self.access_pad = ""
-        self.lbl_access_pad.setText("Geen Access-bestand geselecteerd")
+        language_support.set_text(self.lbl_access_pad, "Geen Access-bestand geselecteerd")
         self.huidige_db_tabellen = []
         self.geselecteerde_tabellen = []
         self.zet_tabellen_status("Geen tabellen geladen")
@@ -811,7 +863,7 @@ class AccessExporterGUI(QMainWindow):
 
     def status_van_rij(self, row: int) -> str:
         item = self.table_queue.item(row, 3)
-        return item.text() if item else ""
+        return item.data(Qt.ItemDataRole.UserRole) if item else ""
 
     def start_conversie(self, doe_alles: bool = False) -> None:
         if self.conversie_bezig():
@@ -820,12 +872,12 @@ class AccessExporterGUI(QMainWindow):
         if doe_alles:
             rows = [r for r in range(len(self.jobs)) if self.status_van_rij(r) in (STATUS_WACHTRIJ, STATUS_FOUT, STATUS_GESTOPT)]
             if not rows:
-                QMessageBox.information(self, "Info", "Er zijn geen bestanden in de wachtrij om te verwerken.")
+                QMessageBox.information(self, tr("Info"), tr("Er zijn geen bestanden in de wachtrij om te verwerken."))
                 return
         else:
             rows = self.geselecteerde_rijen()
             if not rows:
-                QMessageBox.warning(self, "Geen selectie", "Selecteer eerst een rij in de wachtrij.")
+                QMessageBox.warning(self, tr("Geen selectie"), tr("Selecteer eerst een rij in de wachtrij."))
                 return
 
         self.zet_knoppen_bezig(True)
@@ -860,9 +912,10 @@ class AccessExporterGUI(QMainWindow):
             if item is None:
                 item = QTableWidgetItem()
                 self.table_queue.setItem(row, kolom, item)
-            item.setText(tekst)
+            item.setData(Qt.ItemDataRole.UserRole, tekst)
+            item.setText(tr(tekst))
             if kolom == 4:
-                item.setToolTip(tekst)
+                item.setToolTip(tr(tekst))
         status_item = self.table_queue.item(row, 3)
         if status_item:
             status_item.setForeground(QColor(STATUS_KLEUREN.get(status, "#E0E0E0")))
@@ -873,7 +926,7 @@ class AccessExporterGUI(QMainWindow):
 
     def closeEvent(self, a0: QCloseEvent | None) -> None:
         if self.worker is not None and self.conversie_bezig():
-            antwoord = QMessageBox.question(self, "Conversie bezig", "Er loopt nog een conversie. Stoppen en afsluiten?")
+            antwoord = QMessageBox.question(self, tr("Conversie bezig"), tr("Er loopt nog een conversie. Stoppen en afsluiten?"))
             if antwoord != QMessageBox.StandardButton.Yes:
                 if a0:
                     a0.ignore()
@@ -889,7 +942,7 @@ def toon_onverwachte_fout(exc_type, exc_value, exc_tb) -> None:
     import traceback
     details = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
     print(details, file=sys.stderr)
-    box = QMessageBox(QMessageBox.Icon.Critical, "Onverwachte fout", str(exc_value) or exc_type.__name__)
+    box = QMessageBox(QMessageBox.Icon.Critical, tr("Onverwachte fout"), str(exc_value) or exc_type.__name__)
     box.setDetailedText(details)
     box.exec()
 

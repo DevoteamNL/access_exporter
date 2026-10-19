@@ -18,6 +18,7 @@ A Windows desktop tool (PyQt6) that exports tables from Microsoft Access databas
 - **Safe** – the source database is opened read-only; a running conversion can be stopped, and partially written files are removed.
 - **Live progress & log** – per-file progress based on rows processed, colour-coded status and a timestamped log.
 - **Remembers settings** – output folder, export format and last used folders are saved between sessions.
+- **Interface language** – Dutch by default, with live switching to English or French. The language choice is saved between sessions.
 - Dark theme.
 
 ### Requirements
@@ -52,7 +53,25 @@ python access_exporter_pyqt6.py
 
 Tip: press <kbd>Delete</kbd> to remove selected rows from the queue.
 
-> The interface is in Dutch.
+### Development
+
+Run the tests (they use Qt's offscreen platform, no display needed):
+
+```powershell
+$env:QT_QPA_PLATFORM = "offscreen"
+python -m unittest discover -s tests -v
+```
+
+Build the single-file executable (output: `dist/AccessExporter.exe`):
+
+```powershell
+python -m pip install pyinstaller
+pyinstaller --onefile --windowed --name AccessExporter --hidden-import xlsxwriter access_exporter_pyqt6.py
+```
+
+UI texts are written in Dutch in the source; the English and French translations live in `translations.py`. To add or change a text, add its Dutch source string and translations to `TRANSLATIONS`.
+
+Use the **Taal / Language / Langue** selector at the top of the window to switch between **Nederlands**, **English** and **Français**. Labels, dialogs, queue messages and logs follow the selected language; database names and exported data remain unchanged.
 
 ---
 
@@ -70,6 +89,7 @@ Een Windows-desktopprogramma (PyQt6) dat tabellen uit Microsoft Access-databases
 - **Veilig** – de bron-database wordt alleen-lezen geopend; een lopende conversie kan worden gestopt en gedeeltelijk geschreven bestanden worden opgeruimd.
 - **Live voortgang & logboek** – voortgang per bestand op basis van verwerkte rijen, statuskleuren en een logboek met tijdstempels.
 - **Onthoudt instellingen** – doelmap, exportformaat en laatst gebruikte mappen worden tussen sessies bewaard.
+- **Interfacetaal** – standaard Nederlands, met direct omschakelen naar Engels of Frans. De taalkeuze wordt tussen sessies bewaard.
 - Donker thema.
 
 ### Vereisten
@@ -103,3 +123,23 @@ python access_exporter_pyqt6.py
 5. **Voeg toe aan wachtrij** en klik daarna op **Converteer Selectie** of **Converteer Hele Wachtrij**.
 
 Tip: druk op <kbd>Delete</kbd> om geselecteerde rijen uit de wachtrij te verwijderen.
+
+### Ontwikkeling
+
+Tests uitvoeren (met het offscreen-platform van Qt, geen beeldscherm nodig):
+
+```powershell
+$env:QT_QPA_PLATFORM = "offscreen"
+python -m unittest discover -s tests -v
+```
+
+Het losse programma (één bestand) bouwen (resultaat: `dist/AccessExporter.exe`):
+
+```powershell
+python -m pip install pyinstaller
+pyinstaller --onefile --windowed --name AccessExporter --hidden-import xlsxwriter access_exporter_pyqt6.py
+```
+
+De teksten in de interface staan in de broncode in het Nederlands; de Engelse en Franse vertalingen staan in `translations.py`. Voeg om een tekst toe te voegen of te wijzigen de Nederlandse brontekst met vertalingen toe aan `TRANSLATIONS`.
+
+Gebruik de keuzelijst **Taal / Language / Langue** bovenaan het venster om te wisselen tussen **Nederlands**, **English** en **Français**. Labels, dialoogvensters, wachtrijmeldingen en het logboek volgen de gekozen taal; databasenamen en geëxporteerde gegevens blijven ongewijzigd.
