@@ -1,6 +1,8 @@
 name: Release assets
 
 on:
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       tag:
@@ -16,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ inputs.tag || github.event.release.tag_name }}
 
       - uses: actions/setup-python@v5
         with:
@@ -35,12 +37,12 @@ jobs:
 
       - name: Create source zip
         run: |
-          $version = "${{ inputs.tag }}".TrimStart("v")
+          $version = "${{ inputs.tag || github.event.release.tag_name }}".TrimStart("v")
           git archive --format=zip --prefix="access_exporter-$version/" -o "dist/access_exporter-$version-source.zip" HEAD
 
       - name: Upload to release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $version = "${{ inputs.tag }}".TrimStart("v")
-          gh release upload "${{ inputs.tag }}" "dist/AccessExporter.exe#AccessExporter.exe (Windows 64-bit)" "dist/access_exporter-$version-source.zip#Source code (zip)" --clobber
+          $version = "${{ inputs.tag || github.event.release.tag_name }}".TrimStart("v")
+          gh release upload "${{ inputs.tag || github.event.release.tag_name }}" "dist/AccessExporter.exe#AccessExporter.exe (Windows 64-bit)" "dist/access_exporter-$version-source.zip#Source code (zip)" --clobber
