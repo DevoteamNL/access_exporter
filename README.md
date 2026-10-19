@@ -73,6 +73,10 @@ UI texts are written in Dutch in the source; the English and French translations
 
 Use the **Taal / Language / Langue** selector at the top of the window to switch between **Nederlands**, **English** and **Français**. Labels, dialogs, queue messages and logs follow the selected language; database names and exported data remain unchanged.
 
+### License
+
+Licensed under the [GNU General Public License v3.0](LICENSE) (GPL-3.0-only), matching the license of PyQt6, which the application and its standalone executable include.
+
 ---
 
 ## Nederlands
@@ -143,3 +147,7 @@ pyinstaller --onefile --windowed --name AccessExporter --hidden-import xlsxwrite
 De teksten in de interface staan in de broncode in het Nederlands; de Engelse en Franse vertalingen staan in `translations.py`. Voeg om een tekst toe te voegen of te wijzigen de Nederlandse brontekst met vertalingen toe aan `TRANSLATIONS`.
 
 Gebruik de keuzelijst **Taal / Language / Langue** bovenaan het venster om te wisselen tussen **Nederlands**, **English** en **Français**. Labels, dialoogvensters, wachtrijmeldingen en het logboek volgen de gekozen taal; databasenamen en geëxporteerde gegevens blijven ongewijzigd.
+
+### Licentie
+
+Uitgegeven onder de [GNU General Public License v3.0](LICENSE) (GPL-3.0-only), in lijn met de licentie van PyQt6, dat in het programma en het losse programma is opgenomen.
