@@ -12,3 +12,8 @@ venv/
 *.mdb
 *.laccdb
 *.ldb
+
+# PyInstaller build output
+build/
+dist/
+*.spec

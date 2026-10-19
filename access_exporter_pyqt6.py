@@ -6,6 +6,8 @@ Daarnaast is de "Microsoft Access Driver (*.mdb, *.accdb)" nodig, met dezelfde
 bitness (32/64-bit) als de gebruikte Python-installatie.
 """
 
+__version__ = "1.0.0"
+
 import math
 import os
 import re
@@ -468,7 +470,7 @@ class TableSelectionDialog(QDialog):
 class AccessExporterGUI(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Access naar Excel/CSV Exporter - Ultimate Edition")
+        self.setWindowTitle(f"Access naar Excel/CSV Exporter v{__version__}")
         self.resize(1100, 800)
 
         # State variabelen

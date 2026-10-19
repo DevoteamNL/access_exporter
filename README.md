@@ -28,6 +28,10 @@ A Windows desktop tool (PyQt6) that exports tables from Microsoft Access databas
 
 ### Installation
 
+**Option 1 – Standalone executable (no Python needed):** download `AccessExporter.exe` from the [latest release](https://github.com/cramor-devo/access_exporter/releases/latest) and run it. The 64-bit Microsoft Access Database Engine is still required.
+
+**Option 2 – From source:**
+
 ```powershell
 git clone https://github.com/cramor-devo/access_exporter.git
 cd access_exporter
@@ -75,6 +79,10 @@ Een Windows-desktopprogramma (PyQt6) dat tabellen uit Microsoft Access-databases
 - [Microsoft Access Database Engine](https://www.microsoft.com/nl-nl/download/details.aspx?id=54920) (ODBC-driver *"Microsoft Access Driver (\*.mdb, \*.accdb)"*). **De bitness (32/64-bit) moet gelijk zijn aan die van je Python-installatie.** Het programma waarschuwt bij het opstarten als de driver ontbreekt.
 
 ### Installatie
+
+**Optie 1 – Los programma (geen Python nodig):** download `AccessExporter.exe` uit de [nieuwste release](https://github.com/cramor-devo/access_exporter/releases/latest) en start het. De 64-bit Microsoft Access Database Engine is nog steeds vereist.
+
+**Optie 2 – Vanaf de broncode:**
 
 ```powershell
 git clone https://github.com/cramor-devo/access_exporter.git
