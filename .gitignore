@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.vscode/
+.idea/
+
+# Exported output and local databases
+*.xlsx
+*.csv
+*.accdb
+*.mdb
+*.laccdb
+*.ldb
