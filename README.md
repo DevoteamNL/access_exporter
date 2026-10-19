@@ -33,7 +33,7 @@ A Windows desktop tool (PyQt6) that exports tables from Microsoft Access databas
 **Option 2 – From source:**
 
 ```powershell
-git clone https://github.com/cramor-devo/access_exporter.git
+git clone https://github.com/DevoteamNL/access_exporter.git
 cd access_exporter
 python -m pip install -r requirements.txt
 ```
@@ -85,7 +85,7 @@ Een Windows-desktopprogramma (PyQt6) dat tabellen uit Microsoft Access-databases
 **Optie 2 – Vanaf de broncode:**
 
 ```powershell
-git clone https://github.com/cramor-devo/access_exporter.git
+git clone https://github.com/DevoteamNL/access_exporter.git
 cd access_exporter
 python -m pip install -r requirements.txt
 ```
