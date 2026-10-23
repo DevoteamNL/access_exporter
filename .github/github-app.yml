@@ -1,0 +1,42 @@
+# GitHub Copilot app repository configuration.
+# Reference: https://docs.github.com/copilot/reference/github-copilot-app-reference/repository-configuration
+# Scripts run on Windows; commands only call python executables so they work in PowerShell and cmd alike.
+
+instructions: |
+  Agentic development cycle. The user is the product owner (PO) and stakeholder.
+
+  1. Start from a GitHub issue. Read it and any linked context; if there is no issue, ask the PO to create or point to one.
+  2. Research the code, then write a short plan (goal, approach, affected files, tests, risks, open questions).
+  3. Ask the PO to approve the plan with ask_user before writing any code. Do not code until it is approved; revise it if the PO asks.
+  4. Implement on the session branch (never on main). Add or update tests in tests/.
+  5. Run the "Checks" script (compile check + pytest) and fix failures until it is green.
+  6. Update README.md when behaviour, usage or setup changes.
+  7. Open a pull request that links the issue, summarises the changes, and explains how the PO can verify them,
+     including running the app with the "Run" script.
+  8. The PO reviews and merges. Address review comments on the same branch.
+
+  Rules:
+  - Never merge, tag, release or push to main yourself.
+  - Ask the PO concise multiple-choice questions (ask_user) for product or UX decisions; decide technical details yourself.
+  - Escalate blockers (missing access, failing environment, unclear requirements) to the PO promptly instead of working around them.
+  - Keep changes small and focused on the issue. Never commit secrets, databases (*.accdb, *.mdb) or exports.
+
+scripts:
+  - name: Setup
+    command: python -c "import os, subprocess, sys, venv; py = os.path.join('.venv', 'Scripts', 'python.exe'); os.path.exists(py) or venv.create('.venv', with_pip=True); sys.exit(subprocess.call([py, '-m', 'pip', 'install', '-r', 'requirements.txt', 'pytest']))"
+    triggers:
+      - session.create
+  - name: Run
+    command: .venv\Scripts\python.exe access_exporter_pyqt6.py
+  - name: Checks
+    command: .venv\Scripts\python.exe -c "import glob, py_compile, subprocess, sys; [py_compile.compile(f, doraise=True) for f in glob.glob('*.py') + glob.glob('tests/*.py')]; sys.exit(subprocess.call([sys.executable, '-m', 'pytest', '-q', 'tests']))"
+  - name: Archive cleanup
+    command: python -c "import os, shutil; os.path.isfile(os.path.join('.venv', 'pyvenv.cfg')) and shutil.rmtree('.venv', ignore_errors=True)"
+    triggers:
+      - session.archive
+
+auto_open_in_browser: false
+
+automation:
+  auto_issue_session: true
+  remote_control: true
