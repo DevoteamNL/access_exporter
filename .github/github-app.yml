@@ -29,7 +29,7 @@ scripts:
   - name: Run
     command: .venv\Scripts\python.exe access_exporter_pyqt6.py
   - name: Checks
-    command: .venv\Scripts\python.exe -c "import glob, py_compile, subprocess, sys; [py_compile.compile(f, doraise=True) for f in glob.glob('*.py') + glob.glob('tests/*.py')]; sys.exit(subprocess.call([sys.executable, '-m', 'pytest', '-q', 'tests']))"
+    command: .venv\Scripts\python.exe -c "import glob, py_compile, subprocess, sys; [py_compile.compile(f, doraise=True) for f in glob.glob('*.py') + glob.glob('access_exporter/*.py') + glob.glob('tests/*.py') + glob.glob('tools/*.py')]; sys.exit(subprocess.call([sys.executable, '-m', 'pytest', '-q', 'tests']))"
   - name: Archive cleanup
     command: python -c "import os, shutil; os.path.isfile(os.path.join('.venv', 'pyvenv.cfg')) and shutil.rmtree('.venv', ignore_errors=True)"
     triggers:

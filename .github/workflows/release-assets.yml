@@ -25,15 +25,20 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - run: python -m pip install -r requirements.txt pyinstaller
+      - run: python -m pip install -r requirements.txt pytest pyinstaller
 
       - name: Test
-        run: python -m unittest discover -s tests -v
+        run: python -m pytest -q tests
         env:
           QT_QPA_PLATFORM: offscreen
 
       - name: Build single-file executable
-        run: pyinstaller --onefile --windowed --name AccessExporter --hidden-import xlsxwriter access_exporter_pyqt6.py
+        run: .\build.ps1 -Python python
+
+      - name: Checksum
+        run: |
+          $hash = (Get-FileHash dist/AccessExporter.exe -Algorithm SHA256).Hash.ToLower()
+          Set-Content -Path dist/AccessExporter.exe.sha256 -Value "$hash  AccessExporter.exe" -Encoding ascii
 
       - name: Create source zip
         run: |
@@ -45,4 +50,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $version = "${{ inputs.tag || github.event.release.tag_name }}".TrimStart("v")
-          gh release upload "${{ inputs.tag || github.event.release.tag_name }}" "dist/AccessExporter.exe#AccessExporter.exe (Windows 64-bit)" "dist/access_exporter-$version-source.zip#Source code (zip)" --clobber
+          gh release upload "${{ inputs.tag || github.event.release.tag_name }}" "dist/AccessExporter.exe#AccessExporter.exe (Windows 64-bit)" "dist/AccessExporter.exe.sha256#SHA256 checksum" "dist/access_exporter-$version-source.zip#Source code (zip)" --clobber
