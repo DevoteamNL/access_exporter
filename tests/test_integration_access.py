@@ -61,11 +61,15 @@ def test_sleutel_zonder_naam_primarykey(database: Path):
         cursor.execute("CREATE TABLE Eigen_PK (Code TEXT(10), Naam TEXT(50), CONSTRAINT pk_eigen PRIMARY KEY (Code))")
         cursor.execute("CREATE TABLE Uniek_Leeg (Nr LONG, Email TEXT(50), CONSTRAINT uq_email UNIQUE (Email))")
         cursor.execute("INSERT INTO Uniek_Leeg (Nr, Email) VALUES (1, NULL)")
+        cursor.execute("CREATE TABLE Teller_En_Uniek (ID COUNTER PRIMARY KEY, Email TEXT(100) UNIQUE, Naam TEXT(50))")
+        cursor.execute("CREATE TABLE Twee_Uniek (Nr LONG PRIMARY KEY, Email TEXT(100) UNIQUE)")
         conn.commit()
     with closing(verbind_access(str(database))) as conn:
         assert lees_schema(conn, "DDL_PK").sleutel == ["Nr"]
         assert lees_schema(conn, "Eigen_PK").sleutel == ["Code"]
         assert lees_schema(conn, "Uniek_Leeg").sleutel == []
+        assert lees_schema(conn, "Teller_En_Uniek").sleutel == ["ID"]
+        assert lees_schema(conn, "Twee_Uniek").sleutel == []  # Niet eenduidig: liever geen sleutel dan gokken
 
 
 def test_wachtwoordfout_wordt_herkend(database: Path):

@@ -119,6 +119,12 @@ def test_kies_sleutel_primarykey_en_terugval():
     alles_nullable = [Kolom("ID", "LONG", True), Kolom("Naam", "VARCHAR", True)]
     assert kies_sleutel({"Index_ABC": [(1, "ID")]}, alles_nullable, lambda k: True) == ["ID"]
     assert kies_sleutel({"Index_ABC": [(1, "Naam")]}, alles_nullable, lambda k: k != "Naam") == []
+    # Meerdere unieke indexen: AutoNummering wint; anders niet gokken
+    met_teller = [Kolom("ID", "COUNTER", True), Kolom("Email", "VARCHAR", True)]
+    for namen in (("Index_A", "Index_B"), ("Index_B", "Index_A")):
+        indexen = {namen[0]: [(1, "Email")], namen[1]: [(1, "ID")]}
+        assert kies_sleutel(indexen, met_teller, lambda k: True) == ["ID"]
+    assert kies_sleutel({"Index_A": [(1, "ID")], "Index_B": [(1, "Naam")]}, alles_nullable, lambda k: True) == []
 
 
 def test_mislukte_kopie_wordt_opgeruimd_maar_origineel_nooit(tmp_path: Path, monkeypatch):
@@ -263,3 +269,19 @@ def test_icoon_bestaat_en_laadt(qapp):
 def test_vinkje_voor_selectievakjes_bestaat():
     assert Path(themes.VINKJE).is_file()
     assert themes.VINKJE in themes.stylesheet(themes.THEMA_DONKER)
+
+
+def test_stylesheet_met_apostrof_in_pad_blijft_geldig(qapp, monkeypatch):
+    from PyQt6.QtCore import qInstallMessageHandler
+    from PyQt6.QtWidgets import QCheckBox
+
+    meldingen: list[str] = []
+    vorige = qInstallMessageHandler(lambda _t, _c, m: meldingen.append(m))
+    try:
+        monkeypatch.setattr(themes, "VINKJE", "C:/Users/O'Brien (x86)/Temp/check.svg")
+        vak = QCheckBox("x")
+        vak.setStyleSheet(themes.stylesheet(themes.THEMA_DONKER))
+        vak.ensurePolished()
+    finally:
+        qInstallMessageHandler(vorige)
+    assert not [m for m in meldingen if "parse" in m.lower()]

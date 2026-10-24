@@ -108,13 +108,19 @@ def kies_sleutel(indexen: dict[str, list[tuple[int, str]]], kolommen: list[Kolom
         if naam.casefold() == "primarykey":
             return kolommen_van(naam)
     verplicht = {k.naam.casefold() for k in kolommen if not k.nullable}
+    autonummers = {k.naam.casefold() for k in kolommen if k.autonummer}
 
     def zonder_lege(kolom: str) -> bool:
         return kolom.casefold() in verplicht or (zonder_nulls is not None and zonder_nulls(kolom))
 
-    for naam in sorted(indexen, key=lambda n: (len(indexen[n]), n)):
-        if all(zonder_lege(k) for k in kolommen_van(naam)):
-            return kolommen_van(naam)
+    kandidaten = [n for n in indexen if all(zonder_lege(k) for k in kolommen_van(n))]
+    # De driver zegt niet welke index de primaire sleutel is. Bij twijfel: de index met de AutoNummering-kolom;
+    # is dat ook niet eenduidig, dan geen sleutel (veilig: alleen-lezen/toevoegen/vervangen) i.p.v. gokken.
+    met_autonummer = [n for n in kandidaten if any(k.casefold() in autonummers for k in kolommen_van(n))]
+    if len(met_autonummer) == 1:
+        return kolommen_van(met_autonummer[0])
+    if len(kandidaten) == 1:
+        return kolommen_van(kandidaten[0])
     return []
 
 

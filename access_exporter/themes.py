@@ -84,7 +84,7 @@ def stylesheet(thema: str) -> str:
         QCheckBox::indicator, QAbstractItemView::indicator {{ border-radius: 3px; }}
         QRadioButton::indicator {{ border-radius: 8px; }}
         QCheckBox::indicator:hover, QRadioButton::indicator:hover, QAbstractItemView::indicator:hover {{ border-color: {k['accent']}; }}
-        QCheckBox::indicator:checked, QAbstractItemView::indicator:checked {{ background-color: {k['accent']}; border-color: {k['accent']}; image: url({VINKJE}); }}
+        QCheckBox::indicator:checked, QAbstractItemView::indicator:checked {{ background-color: {k['accent']}; border-color: {k['accent']}; image: url("{VINKJE}"); }}
         QRadioButton::indicator:checked {{ background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5, stop:0 white, stop:0.35 white, stop:0.45 {k['accent']}, stop:1 {k['accent']}); border-color: {k['accent']}; }}
         QCheckBox::indicator:disabled, QRadioButton::indicator:disabled {{ border-color: {k['rand']}; background-color: {k['uit_vlak']}; }}
         QTabWidget::pane {{ border: 1px solid {k['rand']}; border-radius: 4px; top: -1px; }}
