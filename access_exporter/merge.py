@@ -17,7 +17,7 @@ from typing import Any
 import pyodbc
 
 from .core import (
-    _ONGELDIGE_BLADTEKENS, EXCEL_MAX_BLADNAAM, lees_rijen, maak_kopie, quote_naam, veilige_bestandsnaam,
+    _ONGELDIGE_BLADTEKENS, EXCEL_MAX_BLADNAAM, controleer_kopiedoel, lees_rijen, maak_kopie, quote_naam, veilige_bestandsnaam,
     verbind_access, zoek_manifest,
 )
 from .file_io import Tabel, lees_export
@@ -96,8 +96,11 @@ class TabelPlan:
 # ---------------------------------------------------------
 # Schema
 # ---------------------------------------------------------
-def kies_sleutel(indexen: dict[str, list[tuple[int, str]]], kolommen: list[Kolom]) -> list[str]:
-    """Primaire sleutel: index 'PrimaryKey' (Access), anders de kleinste unieke index zonder lege kolommen."""
+def kies_sleutel(indexen: dict[str, list[tuple[int, str]]], kolommen: list[Kolom],
+                 zonder_nulls: Callable[[str], bool] | None = None) -> list[str]:
+    """Primaire sleutel: index 'PrimaryKey' (Access), anders de kleinste unieke index zonder lege kolommen.
+    De Access-driver meldt elke kolom als 'nullable' (ook sleutelkolommen); `zonder_nulls(kolom)` controleert
+    daarom in de gegevens zelf of een kolom lege waarden bevat."""
     def kolommen_van(naam: str) -> list[str]:
         return [k for _, k in sorted(indexen[naam])]
 
@@ -105,10 +108,14 @@ def kies_sleutel(indexen: dict[str, list[tuple[int, str]]], kolommen: list[Kolom
         if naam.casefold() == "primarykey":
             return kolommen_van(naam)
     verplicht = {k.naam.casefold() for k in kolommen if not k.nullable}
-    kandidaten = [n for n in indexen if all(k.casefold() in verplicht for k in kolommen_van(n))]
-    if not kandidaten:
-        return []
-    return kolommen_van(min(kandidaten, key=lambda n: (len(indexen[n]), n)))
+
+    def zonder_lege(kolom: str) -> bool:
+        return kolom.casefold() in verplicht or (zonder_nulls is not None and zonder_nulls(kolom))
+
+    for naam in sorted(indexen, key=lambda n: (len(indexen[n]), n)):
+        if all(zonder_lege(k) for k in kolommen_van(naam)):
+            return kolommen_van(naam)
+    return []
 
 
 def lees_schema(conn: pyodbc.Connection, tabel: str) -> Schema:
@@ -121,7 +128,13 @@ def lees_schema(conn: pyodbc.Connection, tabel: str) -> Schema:
         for s in cursor.statistics(tabel, unique=True):
             if s.table_name == tabel and s.index_name and s.column_name and not s.non_unique:
                 indexen.setdefault(s.index_name, []).append((s.ordinal_position or 0, s.column_name))
-    return Schema(tabel, kolommen, kies_sleutel(indexen, kolommen))
+
+    def zonder_nulls(kolom: str) -> bool:
+        with closing(conn.cursor()) as cursor:
+            cursor.execute(f"SELECT COUNT(*) FROM {quote_naam(tabel)} WHERE {quote_naam(kolom)} IS NULL")
+            return cursor.fetchone()[0] == 0
+
+    return Schema(tabel, kolommen, kies_sleutel(indexen, kolommen, zonder_nulls))
 
 
 # ---------------------------------------------------------
@@ -516,9 +529,11 @@ def zet_terug_in_kopie(origineel: str, doel: str, plannen: list[TabelPlan], wach
                        stop: Callable[[], bool] = lambda: False,
                        voortgang: Callable[[int, int], None] = lambda klaar, totaal: None) -> None:
     """Kopieert de originele database naar `doel` en voert de plannen uit op die kopie.
-    Mislukt het, dan wordt de (half bijgewerkte) kopie verwijderd. Het origineel wordt nooit gewijzigd."""
-    maak_kopie(origineel, doel)
+    Mislukt het (ook tijdens het kopiëren), dan wordt de (half geschreven) kopie verwijderd.
+    Het origineel wordt nooit gewijzigd."""
+    controleer_kopiedoel(origineel, doel)  # Vóór de try: bij deze fouten is er nog niets geschreven
     try:
+        maak_kopie(origineel, doel)
         with closing(verbind_access(doel, wachtwoord, alleen_lezen=False)) as conn:
             voer_uit(conn, plannen, stop, voortgang)
     except BaseException:

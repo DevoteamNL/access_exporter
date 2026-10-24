@@ -81,3 +81,29 @@ def test_terugzetten_via_tabblad(database: Path, tmp_path: Path, qapp, settings)
         wacht_tot(lambda: klaar.called)
     assert "Gewijzigd" in [r[1] for r in inhoud(doel, "Klanten")]
     assert "Gewijzigd" not in [r[1] for r in inhoud(database, "Klanten")]
+
+
+def test_merge_tab_weigert_wisselen_tijdens_berekening_en_negeert_oud_voorbeeld(qapp, settings, tmp_path: Path):
+    from access_exporter.merge import TabelPlan
+
+    tab = MergeTab(lambda _m: None, settings)
+    tab.db_pad = str(tmp_path / "A.accdb")
+
+    class BezigeWorker:
+        def isRunning(self) -> bool:
+            return True
+
+    tab.worker = BezigeWorker()  # type: ignore[assignment]
+    with patch.object(merge_module.QMessageBox, "information") as melding, \
+         patch.object(merge_module, "met_wachtwoord") as openen:
+        tab.open_paden([str(tmp_path / "B.accdb")])
+    assert melding.called and not openen.called
+    assert tab.db_pad == str(tmp_path / "A.accdb")
+    tab.worker = None
+
+    # Voorbeeld berekend voor A, maar intussen is B gekozen: het mag niet worden overgenomen
+    oud = (str(tmp_path / "A.accdb"), tab.huidige_modus(), tab.chk_verwijderen.isChecked())
+    tab.db_pad = str(tmp_path / "B.accdb")
+    tab._voorbeeld_klaar([TabelPlan("Klanten", tab.huidige_modus(), ["ID"], invoegen=[{"ID": 1}])], oud)
+    assert tab.plannen == []
+    assert not tab.btn_samenvoegen.isEnabled()

@@ -210,7 +210,16 @@ class MergeTab(QWidget):
         if pad:
             self.open_database(pad)
 
+    def _weiger_als_bezig(self) -> bool:
+        """Tijdens een berekening of samenvoeging mogen database en bestanden niet wisselen (ook niet via slepen)."""
+        if self.bezig():
+            QMessageBox.information(self, tr("Bezig"), tr("Wacht tot het samenvoegen klaar is of druk op Stop."))
+            return True
+        return False
+
     def open_database(self, pad: str) -> None:
+        if self._weiger_als_bezig():
+            return
         pad = os.path.normpath(pad)
         try:
             resultaat = met_wachtwoord(self, pad, lambda ww: haal_tabellen_op(pad, ww))
@@ -233,6 +242,8 @@ class MergeTab(QWidget):
             self.open_paden(paden)
 
     def open_paden(self, paden: list[str]) -> None:
+        if self._weiger_als_bezig():
+            return
         databases = [p for p in paden if is_access_bestand(p)]
         if databases:
             self.open_database(databases[0])
@@ -248,6 +259,8 @@ class MergeTab(QWidget):
         self.vul_koppeling()
 
     def wis_bestanden(self) -> None:
+        if self._weiger_als_bezig():
+            return
         self.bronnen = []
         self.vul_koppeling()
 
@@ -322,9 +335,17 @@ class MergeTab(QWidget):
                 return bereken_plannen(conn, koppelingen, modus, verwijderen, stop)
 
         self.log(f"Voorbeeld berekenen voor {os.path.basename(pad)}...")
-        self._start(taak, self._voorbeeld_klaar)
+        context = (pad, modus, verwijderen)
+        self._start(taak, lambda plannen: self._voorbeeld_klaar(plannen, context))
 
-    def _voorbeeld_klaar(self, plannen: list[TabelPlan]) -> None:
+    def _huidige_context(self) -> tuple[str, str, bool]:
+        return self.db_pad, self.huidige_modus(), self.chk_verwijderen.isChecked()
+
+    def _voorbeeld_klaar(self, plannen: list[TabelPlan], context: tuple[str, str, bool] | None = None) -> None:
+        # Een voorbeeld voor een andere database of andere opties mag nooit worden uitgevoerd
+        if context is not None and context != self._huidige_context():
+            self.log("Voorbeeld vervallen: de database of opties zijn gewijzigd. Bereken het voorbeeld opnieuw.")
+            return
         self.plannen = plannen
         self.toon_plannen()
         for plan in plannen:

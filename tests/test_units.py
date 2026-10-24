@@ -115,6 +115,31 @@ def test_kies_sleutel_primarykey_en_terugval():
     assert kies_sleutel({"PrimaryKey": [(1, "Code")], "Index_1": [(1, "ID")]}, kolommen) == ["Code"]
     assert kies_sleutel({"Index_X": [(1, "ID")], "Index_N": [(1, "Naam")]}, kolommen) == ["ID"]
     assert kies_sleutel({"Index_N": [(1, "Naam")]}, kolommen) == []
+    # Access meldt alle kolommen als nullable: dan beslist de controle op lege waarden in de gegevens
+    alles_nullable = [Kolom("ID", "LONG", True), Kolom("Naam", "VARCHAR", True)]
+    assert kies_sleutel({"Index_ABC": [(1, "ID")]}, alles_nullable, lambda k: True) == ["ID"]
+    assert kies_sleutel({"Index_ABC": [(1, "Naam")]}, alles_nullable, lambda k: k != "Naam") == []
+
+
+def test_mislukte_kopie_wordt_opgeruimd_maar_origineel_nooit(tmp_path: Path, monkeypatch):
+    from access_exporter import core
+    from access_exporter.merge import zet_terug_in_kopie
+
+    bron = tmp_path / "DB.accdb"
+    bron.write_bytes(b"origineel")
+    doel = tmp_path / "kopie.accdb"
+
+    def half_kopieren(_van: str, naar: str) -> None:
+        Path(naar).write_bytes(b"half")
+        raise OSError("schijf vol")
+
+    monkeypatch.setattr(core.shutil, "copyfile", half_kopieren)
+    with pytest.raises(OSError):
+        zet_terug_in_kopie(str(bron), str(doel), [])
+    assert not doel.exists()
+    with pytest.raises(ValueError):
+        zet_terug_in_kopie(str(bron), str(tmp_path / "." / "DB.accdb"), [])
+    assert bron.read_bytes() == b"origineel"
 
 
 # --- merge: plannen ---

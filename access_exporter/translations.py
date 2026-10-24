@@ -228,6 +228,10 @@ TRANSLATIONS = {
     "alles": ("all", "tout"),
     "Wacht tot het samenvoegen klaar is of druk op Stop.": ("Wait until the merge has finished or press Stop.", "Attendez la fin de la fusion ou appuyez sur Arrêter."),
     "⏹ Samenvoegen gestopt; er is niets opgeslagen.": ("⏹ Merge stopped; nothing was saved.", "⏹ Fusion arrêtée ; rien n'a été enregistré."),
+    "Voorbeeld vervallen: de database of opties zijn gewijzigd. Bereken het voorbeeld opnieuw.": (
+        "Preview discarded: the database or options have changed. Calculate the preview again.",
+        "Aperçu abandonné : la base ou les options ont changé. Recalculez l'aperçu.",
+    ),
     "❌ Samenvoegen mislukt: {error}": ("❌ Merge failed: {error}", "❌ Échec de la fusion : {error}"),
     "Samenvoegen mislukt: {error}": ("Merge failed: {error}", "Échec de la fusion : {error}"),
     "Voorbeeld berekenen voor {name}...": ("Calculating preview for {name}...", "Calcul de l'aperçu pour {name}..."),

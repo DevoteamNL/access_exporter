@@ -54,6 +54,20 @@ def test_tabellen_queries_en_sleutels(database: Path):
         assert lees_schema(conn, "Log").sleutel == []
 
 
+def test_sleutel_zonder_naam_primarykey(database: Path):
+    with closing(verbind_access(str(database), alleen_lezen=False)) as conn:
+        cursor = conn.cursor()
+        cursor.execute("CREATE TABLE DDL_PK (Nr LONG PRIMARY KEY, Omschrijving TEXT(50))")
+        cursor.execute("CREATE TABLE Eigen_PK (Code TEXT(10), Naam TEXT(50), CONSTRAINT pk_eigen PRIMARY KEY (Code))")
+        cursor.execute("CREATE TABLE Uniek_Leeg (Nr LONG, Email TEXT(50), CONSTRAINT uq_email UNIQUE (Email))")
+        cursor.execute("INSERT INTO Uniek_Leeg (Nr, Email) VALUES (1, NULL)")
+        conn.commit()
+    with closing(verbind_access(str(database))) as conn:
+        assert lees_schema(conn, "DDL_PK").sleutel == ["Nr"]
+        assert lees_schema(conn, "Eigen_PK").sleutel == ["Code"]
+        assert lees_schema(conn, "Uniek_Leeg").sleutel == []
+
+
 def test_wachtwoordfout_wordt_herkend(database: Path):
     import pyodbc
     with patch("access_exporter.core.pyodbc.connect", side_effect=pyodbc.Error("HY000", "Not a valid password. (-1905)")):

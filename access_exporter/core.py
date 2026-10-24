@@ -186,11 +186,17 @@ def is_vergrendeld(pad: str) -> bool:
     return os.path.exists(lockbestand(pad))
 
 
-def maak_kopie(origineel: str, doel: str) -> None:
-    """Kopieert de database naar een nieuw bestand; het origineel blijft ongewijzigd."""
-    if os.path.normcase(os.path.abspath(origineel)) == os.path.normcase(os.path.abspath(doel)):
+def controleer_kopiedoel(origineel: str, doel: str) -> None:
+    """Weigert een doel dat hetzelfde bestand is als het origineel (ook via 8.3-namen of links) of niet schrijfbaar is."""
+    zelfde = os.path.normcase(os.path.abspath(origineel)) == os.path.normcase(os.path.abspath(doel))
+    if zelfde or (os.path.exists(doel) and os.path.samefile(origineel, doel)):
         raise ValueError("De kopie mag niet hetzelfde bestand zijn als het origineel.")
     controleer_schrijfbaar(doel)
+
+
+def maak_kopie(origineel: str, doel: str) -> None:
+    """Kopieert de database naar een nieuw bestand; het origineel blijft ongewijzigd."""
+    controleer_kopiedoel(origineel, doel)
     shutil.copyfile(origineel, doel)
 
 
