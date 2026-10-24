@@ -113,7 +113,148 @@ TRANSLATIONS = {
     "CSV {index}/{total}: {name}": ("CSV {index}/{total}: {name}", "CSV {index}/{total} : {name}"),
     "CSV {index}/{total} geschreven": ("CSV {index}/{total} written", "CSV {index}/{total} écrit"),
     "Doelbestand is in gebruik of alleen-lezen: {name}": ("Output file is in use or read-only: {name}", "Le fichier de destination est utilisé ou en lecture seule : {name}"),
+    # --- Thema en tabbladen ---
+    "Thema": ("Theme", "Thème"),
+    "Systeem": ("System", "Système"),
+    "Licht": ("Light", "Clair"),
+    "Donker": ("Dark", "Sombre"),
+    "📤 Exporteren": ("📤 Export", "📤 Exporter"),
+    "✏️ Bewerken": ("✏️ Edit", "✏️ Modifier"),
+    "🔁 Terugzetten naar Access": ("🔁 Merge back into Access", "🔁 Réintégrer dans Access"),
+    # --- Exporteren: nieuwe opties ---
+    "Of sleep een .accdb/.mdb-bestand naar dit venster": ("Or drag an .accdb/.mdb file onto this window", "Ou faites glisser un fichier .accdb/.mdb sur cette fenêtre"),
+    "Decimaalteken in CSV-bestanden": ("Decimal separator in CSV files", "Séparateur décimal dans les fichiers CSV"),
+    "Decimale komma (1,5)": ("Decimal comma (1,5)", "Virgule décimale (1,5)"),
+    "Decimale punt (1.5)": ("Decimal point (1.5)", "Point décimal (1.5)"),
+    "Ook opgeslagen query's": ("Include saved queries", "Inclure les requêtes enregistrées"),
+    "Toon ook opgeslagen selectiequery's in de tabellijst, zodat je hun resultaat kunt exporteren": ("Also list saved select queries, so you can export their results", "Afficher aussi les requêtes de sélection enregistrées pour pouvoir exporter leur résultat"),
+    "Dubbelklik op een afgeronde Excel-taak om het bestand in de editor te openen": ("Double-click a finished Excel job to open the file in the editor", "Double-cliquez sur une tâche Excel terminée pour ouvrir le fichier dans l'éditeur"),
+    "🧹 Wis afgeronde taken": ("🧹 Clear finished jobs", "🧹 Effacer les tâches terminées"),
+    "Verwijder alle taken met status 'Klaar' uit de wachtrij": ("Remove all jobs with status 'Done' from the queue", "Retirer de la file toutes les tâches au statut 'Terminé'"),
+    "Open bestand": ("Open file", "Ouvrir un fichier"),
+    "CSV-bestanden (*.csv)": ("CSV files (*.csv)", "Fichiers CSV (*.csv)"),
+    # --- Wachtwoord ---
+    "Wachtwoord vereist": ("Password required", "Mot de passe requis"),
+    "Voer het wachtwoord in voor {name}:": ("Enter the password for {name}:", "Saisissez le mot de passe de {name} :"),
+    "Onjuist wachtwoord. Voer het wachtwoord in voor {name}:": ("Incorrect password. Enter the password for {name}:", "Mot de passe incorrect. Saisissez le mot de passe de {name} :"),
+    "De database is met een wachtwoord beveiligd, of het opgegeven wachtwoord klopt niet.": ("The database is password protected, or the password is incorrect.", "La base de données est protégée par un mot de passe, ou le mot de passe est incorrect."),
+    "De kopie mag niet hetzelfde bestand zijn als het origineel.": ("The copy must not be the same file as the original.", "La copie ne peut pas être le même fichier que l'original."),
+    "Niet-ondersteund bestandstype: {name}": ("Unsupported file type: {name}", "Type de fichier non pris en charge : {name}"),
+    # --- Editor ---
+    "Ja": ("Yes", "Oui"),
+    "Nee": ("No", "Non"),
+    "🗄 Open Access-database...": ("🗄 Open Access database...", "🗄 Ouvrir une base Access..."),
+    "Bewerk tabellen direct; opslaan maakt altijd een nieuwe kopie van de database": ("Edit tables directly; saving always creates a new copy of the database", "Modifiez les tables directement ; l'enregistrement crée toujours une nouvelle copie de la base"),
+    "📂 Open CSV/Excel-bestand...": ("📂 Open CSV/Excel file...", "📂 Ouvrir un fichier CSV/Excel..."),
+    "Bewerk een geëxporteerd bestand; opslaan maakt altijd een nieuw bestand": ("Edit an exported file; saving always creates a new file", "Modifiez un fichier exporté ; l'enregistrement crée toujours un nouveau fichier"),
+    "Geen database of bestand geopend": ("No database or file open", "Aucune base ou fichier ouvert"),
+    "Tabel / blad:": ("Table / sheet:", "Table / feuille :"),
+    "🔍 Zoeken in alle kolommen... (Ctrl+F)": ("🔍 Search all columns... (Ctrl+F)", "🔍 Rechercher dans toutes les colonnes... (Ctrl+F)"),
+    "➕ Rij toevoegen": ("➕ Add row", "➕ Ajouter une ligne"),
+    "➖ Rijen verwijderen": ("➖ Delete rows", "➖ Supprimer les lignes"),
+    "Verwijder de geselecteerde rijen (Delete)": ("Delete the selected rows (Delete)", "Supprimer les lignes sélectionnées (Suppr)"),
+    "💾 Opslaan als...": ("💾 Save as...", "💾 Enregistrer sous..."),
+    "{count} rijen · {columns} kolommen": ("{count} rows · {columns} columns", "{count} lignes · {columns} colonnes"),
+    "{count} rijen · {columns} kolommen · niet-opgeslagen wijzigingen": ("{count} rows · {columns} columns · unsaved changes", "{count} lignes · {columns} colonnes · modifications non enregistrées"),
+    "Niet-opgeslagen wijzigingen": ("Unsaved changes", "Modifications non enregistrées"),
+    "Wijzigingen in {name} opslaan?": ("Save changes to {name}?", "Enregistrer les modifications de {name} ?"),
+    "Export-bestanden (*.xlsx *.csv);;Alle bestanden (*.*)": ("Exported files (*.xlsx *.csv);;All files (*.*)", "Fichiers exportés (*.xlsx *.csv);;Tous les fichiers (*.*)"),
+    "Kan bestand niet openen: {error}": ("Cannot open file: {error}", "Impossible d'ouvrir le fichier : {error}"),
+    "Geopend in editor: {name}": ("Opened in editor: {name}", "Ouvert dans l'éditeur : {name}"),
+    "Ongeldige waarde": ("Invalid value", "Valeur non valide"),
+    "❌ Fout bij laden van tabel '{name}': {error}": ("❌ Error loading table '{name}': {error}", "❌ Erreur lors du chargement de la table '{name}' : {error}"),
+    "Deze tabel heeft geen primaire sleutel en kan alleen bekeken worden.": ("This table has no primary key and is read-only.", "Cette table n'a pas de clé primaire et est en lecture seule."),
+    "Alleen de eerste {count} van {total} rijen zijn geladen.": ("Only the first {count} of {total} rows are loaded.", "Seules les {count} premières lignes sur {total} sont chargées."),
+    "Excel-bestand (*.xlsx);;CSV-bestand (*.csv)": ("Excel file (*.xlsx);;CSV file (*.csv)", "Fichier Excel (*.xlsx);;Fichier CSV (*.csv)"),
+    "Opslaan als": ("Save as", "Enregistrer sous"),
+    "ℹ Alleen blad '{name}' is als CSV opgeslagen.": ("ℹ Only sheet '{name}' was saved as CSV.", "ℹ Seule la feuille '{name}' a été enregistrée en CSV."),
+    "Opslaan mislukt: {error}": ("Saving failed: {error}", "Échec de l'enregistrement : {error}"),
+    "✅ Opgeslagen als: {name}": ("✅ Saved as: {name}", "✅ Enregistré sous : {name}"),
+    "Er zijn geen wijzigingen om op te slaan.": ("There are no changes to save.", "Il n'y a aucune modification à enregistrer."),
+    "Kan niet opslaan": ("Cannot save", "Impossible d'enregistrer"),
+    "Opslaan als nieuwe kopie van de database": ("Save as a new copy of the database", "Enregistrer comme nouvelle copie de la base"),
+    "Access Databases (*.accdb *.mdb)": ("Access Databases (*.accdb *.mdb)", "Bases de données Access (*.accdb *.mdb)"),
+    "Database in gebruik": ("Database in use", "Base de données en cours d'utilisation"),
+    "De database lijkt geopend te zijn in Access. Sluit Access voor een betrouwbare kopie. Toch doorgaan?": ("The database appears to be open in Access. Close Access for a reliable copy. Continue anyway?", "La base semble ouverte dans Access. Fermez Access pour une copie fiable. Continuer quand même ?"),
+    "✅ {count} wijzigingen opgeslagen in nieuwe kopie: {name}": ("✅ {count} changes saved to new copy: {name}", "✅ {count} modifications enregistrées dans une nouvelle copie : {name}"),
+    # --- Omzetfouten en opmerkingen bij samenvoegen ---
+    "'{value}' is geen getal": ("'{value}' is not a number", "'{value}' n'est pas un nombre"),
+    "'{value}' is geen geheel getal": ("'{value}' is not a whole number", "'{value}' n'est pas un nombre entier"),
+    "'{value}' is geen geldige datum": ("'{value}' is not a valid date", "'{value}' n'est pas une date valide"),
+    "'{value}' is geen Ja/Nee-waarde": ("'{value}' is not a Yes/No value", "'{value}' n'est pas une valeur Oui/Non"),
+    "tekst is langer dan {count} tekens": ("text is longer than {count} characters", "le texte dépasse {count} caractères"),
+    "Kolom '{column}' bestaat niet in Access en wordt overgeslagen": ("Column '{column}' does not exist in Access and is skipped", "La colonne '{column}' n'existe pas dans Access et est ignorée"),
+    "Kolom '{column}' ({type}) wordt niet ondersteund en overgeslagen": ("Column '{column}' ({type}) is not supported and is skipped", "La colonne '{column}' ({type}) n'est pas prise en charge et est ignorée"),
+    "Kolom '{column}' ontbreekt in het bestand en blijft ongewijzigd": ("Column '{column}' is missing from the file and stays unchanged", "La colonne '{column}' est absente du fichier et reste inchangée"),
+    "Kolom '{column}': {error}": ("Column '{column}': {error}", "Colonne '{column}' : {error}"),
+    "Tabel '{name}' heeft geen primaire sleutel; kies 'Alleen nieuwe rijen toevoegen' of 'Tabelinhoud vervangen'": ("Table '{name}' has no primary key; choose 'Only add new rows' or 'Replace table contents'", "La table '{name}' n'a pas de clé primaire ; choisissez 'Ajouter uniquement les nouvelles lignes' ou 'Remplacer le contenu de la table'"),
+    "Sleutelkolom '{column}' ontbreekt in het bestand": ("Key column '{column}' is missing from the file", "La colonne clé '{column}' est absente du fichier"),
+    "Rij {row}, kolom '{column}': {error}": ("Row {row}, column '{column}': {error}", "Ligne {row}, colonne '{column}' : {error}"),
+    "Rij {row}: sleutelwaarde ontbreekt": ("Row {row}: key value is missing", "Ligne {row} : valeur de clé manquante"),
+    "Rij {row}: dubbele sleutelwaarde {value}": ("Row {row}: duplicate key value {value}", "Ligne {row} : valeur de clé en double {value}"),
+    "Er worden geen rijen verwijderd omdat er fouten zijn": ("No rows are deleted because there are errors", "Aucune ligne n'est supprimée car il y a des erreurs"),
+    # --- Terugzetten naar Access ---
+    "Zet bewerkte CSV/Excel-exports terug in Access. Er wordt altijd een nieuwe kopie van de database gemaakt; het origineel blijft ongewijzigd.": ("Merge edited CSV/Excel exports back into Access. A new copy of the database is always created; the original stays unchanged.", "Réintégrez des exports CSV/Excel modifiés dans Access. Une nouvelle copie de la base est toujours créée ; l'original reste inchangé."),
+    "1. Originele Access-database": ("1. Original Access database", "1. Base Access d'origine"),
+    "🗄 Kies database...": ("🗄 Choose database...", "🗄 Choisir la base..."),
+    "Geen database geselecteerd": ("No database selected", "Aucune base sélectionnée"),
+    "2. Bewerkte bestanden en doeltabellen": ("2. Edited files and target tables", "2. Fichiers modifiés et tables cibles"),
+    "📂 Bestanden toevoegen...": ("📂 Add files...", "📂 Ajouter des fichiers..."),
+    "Bestanden toevoegen": ("Add files", "Ajouter des fichiers"),
+    "🗑 Lijst wissen": ("🗑 Clear list", "🗑 Vider la liste"),
+    "Bestand / blad": ("File / sheet", "Fichier / feuille"),
+    "Rijen": ("Rows", "Lignes"),
+    "Doeltabel in Access": ("Target table in Access", "Table cible dans Access"),
+    "(overslaan)": ("(skip)", "(ignorer)"),
+    "3. Hoe samenvoegen?": ("3. How to merge?", "3. Comment fusionner ?"),
+    "Bijwerken en toevoegen (op primaire sleutel)": ("Update and add (by primary key)", "Mettre à jour et ajouter (par clé primaire)"),
+    "Bestaande rijen worden bijgewerkt op basis van de primaire sleutel; nieuwe rijen worden toegevoegd": ("Existing rows are updated by primary key; new rows are added", "Les lignes existantes sont mises à jour par clé primaire ; les nouvelles lignes sont ajoutées"),
+    "Alleen nieuwe rijen toevoegen": ("Only add new rows", "Ajouter uniquement les nouvelles lignes"),
+    "Rijen waarvan de sleutel al bestaat worden overgeslagen; er wordt niets gewijzigd of verwijderd": ("Rows whose key already exists are skipped; nothing is changed or deleted", "Les lignes dont la clé existe déjà sont ignorées ; rien n'est modifié ni supprimé"),
+    "Tabelinhoud vervangen": ("Replace table contents", "Remplacer le contenu de la table"),
+    "Alle rijen in de gekoppelde tabellen worden verwijderd en vervangen door de rijen uit het bestand": ("All rows in the linked tables are deleted and replaced by the rows from the file", "Toutes les lignes des tables liées sont supprimées et remplacées par celles du fichier"),
+    "Rijen die niet meer in het bestand staan ook verwijderen": ("Also delete rows that are no longer in the file", "Supprimer aussi les lignes qui ne sont plus dans le fichier"),
+    "Alleen bij 'Bijwerken en toevoegen'. Er wordt niets verwijderd als er fouten zijn.": ("Only with 'Update and add'. Nothing is deleted if there are errors.", "Uniquement avec 'Mettre à jour et ajouter'. Rien n'est supprimé en cas d'erreurs."),
+    "4. Controleren en samenvoegen": ("4. Review and merge", "4. Vérifier et fusionner"),
+    "🔍 Voorbeeld berekenen": ("🔍 Calculate preview", "🔍 Calculer l'aperçu"),
+    "Toont wat er per tabel verandert, zonder iets op te slaan": ("Shows what changes per table, without saving anything", "Montre ce qui change par table, sans rien enregistrer"),
+    "💾 Samenvoegen in nieuwe kopie...": ("💾 Merge into new copy...", "💾 Fusionner dans une nouvelle copie..."),
+    "Tabel": ("Table", "Table"),
+    "Toevoegen": ("Add", "Ajouter"),
+    "Wijzigen": ("Change", "Modifier"),
+    "Verwijderen": ("Delete", "Supprimer"),
+    "Ongewijzigd": ("Unchanged", "Inchangées"),
+    "Fouten": ("Errors", "Erreurs"),
+    "alles": ("all", "tout"),
+    "Wacht tot het samenvoegen klaar is of druk op Stop.": ("Wait until the merge has finished or press Stop.", "Attendez la fin de la fusion ou appuyez sur Arrêter."),
+    "⏹ Samenvoegen gestopt; er is niets opgeslagen.": ("⏹ Merge stopped; nothing was saved.", "⏹ Fusion arrêtée ; rien n'a été enregistré."),
+    "❌ Samenvoegen mislukt: {error}": ("❌ Merge failed: {error}", "❌ Échec de la fusion : {error}"),
+    "Samenvoegen mislukt: {error}": ("Merge failed: {error}", "Échec de la fusion : {error}"),
+    "Voorbeeld berekenen voor {name}...": ("Calculating preview for {name}...", "Calcul de l'aperçu pour {name}..."),
+    "⚠ {name}: nog {count} fouten": ("⚠ {name}: {count} more errors", "⚠ {name} : {count} erreurs supplémentaires"),
+    "⚠ {name}: {error}": ("⚠ {name}: {error}", "⚠ {name} : {error}"),
+    "ℹ {name}: {error}": ("ℹ {name}: {error}", "ℹ {name} : {error}"),
+    "Totaal {count} wijzigingen klaar om samen te voegen.": ("{count} changes ready to merge in total.", "{count} modifications prêtes à fusionner au total."),
+    "Totaal {count} wijzigingen klaar om samen te voegen. {errors} rijen of tabellen worden overgeslagen vanwege fouten (zie log).": ("{count} changes ready to merge in total. {errors} rows or tables are skipped because of errors (see log).", "{count} modifications prêtes à fusionner au total. {errors} lignes ou tables sont ignorées en raison d'erreurs (voir le journal)."),
+    "Samengevoegde database opslaan als": ("Save merged database as", "Enregistrer la base fusionnée sous"),
+    "Kies een andere naam: het origineel wordt nooit overschreven.": ("Choose another name: the original is never overwritten.", "Choisissez un autre nom : l'original n'est jamais écrasé."),
+    "Bevestigen": ("Confirm", "Confirmer"),
+    "{count} wijzigingen samenvoegen in {name}?": ("Merge {count} changes into {name}?", "Fusionner {count} modifications dans {name} ?"),
+    "{count} wijzigingen samenvoegen in {name}? Let op: dit omvat {deletes} verwijderingen.": ("Merge {count} changes into {name}? Note: this includes {deletes} deletions.", "Fusionner {count} modifications dans {name} ? Attention : cela comprend {deletes} suppressions."),
+    "Samenvoegen in nieuwe kopie: {name}...": ("Merging into new copy: {name}...", "Fusion dans une nouvelle copie : {name}..."),
+    "✅ Samengevoegd in nieuwe kopie: {name}": ("✅ Merged into new copy: {name}", "✅ Fusionné dans une nouvelle copie : {name}"),
+    "Samengevoegd in nieuwe kopie: {name}": ("Merged into new copy: {name}", "Fusionné dans une nouvelle copie : {name}"),
 }
+
+# Plaatshouders met een aantal krijgen het duizendtalscheidingsteken van de taal
+NUMERIEKE_PLAATSHOUDERS = {"count", "total", "errors", "deletes"}
+DUIZENDTALLEN = {"nl": ".", "en": ",", "fr": "\u00a0"}
+
+
+def formatteer_getal(tekst: str, taal: str) -> str:
+    if not tekst.isdigit() or len(tekst) <= 3:
+        return tekst
+    return f"{int(tekst):,}".replace(",", DUIZENDTALLEN.get(taal, ","))
 
 
 class LanguageSupport:
@@ -128,7 +269,7 @@ class LanguageSupport:
                     f"(?P<{part[1:-1]}>.+?)" if part.startswith("{") else re.escape(part)
                     for part in parts
                 )
-                self.patterns.append((re.compile(pattern, re.DOTALL), targets))
+                self.patterns.append((re.compile(pattern, re.DOTALL), source, targets))
 
     def set_language(self, language: str) -> None:
         self.language = language if language in ("nl", "en", "fr") else "nl"
@@ -143,18 +284,19 @@ class LanguageSupport:
                 app.installTranslator(self.qt_translator)
 
     def text(self, source: str) -> str:
-        if self.language == "nl":
-            return source
-        index = 0 if self.language == "en" else 1
         if source in TRANSLATIONS:
-            return TRANSLATIONS[source][index]
-        for pattern, targets in self.patterns:
+            return source if self.language == "nl" else TRANSLATIONS[source][0 if self.language == "en" else 1]
+        for pattern, template, targets in self.patterns:
             match = pattern.fullmatch(source)
             if match:
-                values = match.groupdict()
-                if "error" in values:
-                    values["error"] = self.text(values["error"])
-                return targets[index].format(**values)
+                # Ook in het Nederlands: getallen opmaken; ingebedde meldingen (bijv. fouten) mee vertalen
+                values = {
+                    name: formatteer_getal(value, self.language) if name in NUMERIEKE_PLAATSHOUDERS else self.text(value)
+                    for name, value in match.groupdict().items()
+                }
+                if self.language != "nl":
+                    template = targets[0 if self.language == "en" else 1]
+                return template.format(**values)
         return source
 
     def set_text(self, widget: QWidget, source: str) -> None:

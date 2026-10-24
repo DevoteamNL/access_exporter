@@ -7,7 +7,8 @@ from PyQt6.QtCore import QSettings
 from PyQt6.QtWidgets import QApplication
 
 import access_exporter_pyqt6 as exporter
-from translations import TRANSLATIONS, language_support, tr
+from access_exporter import main_window
+from access_exporter.translations import TRANSLATIONS, language_support, tr
 
 
 class LanguageTests(unittest.TestCase):
@@ -21,7 +22,7 @@ class LanguageTests(unittest.TestCase):
         self.settings = QSettings(
             self.directory.name + "/settings.ini", QSettings.Format.IniFormat
         )
-        settings_patch = patch.object(exporter, "QSettings", return_value=self.settings)
+        settings_patch = patch.object(main_window, "QSettings", return_value=self.settings)
         settings_patch.start()
         self.addCleanup(settings_patch.stop)
         environment_patch = patch.object(exporter.AccessExporterGUI, "controleer_omgeving")
