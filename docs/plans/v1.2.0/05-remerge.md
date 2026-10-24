@@ -1,6 +1,6 @@
-﻿# 05 – Remerge exported CSV/Excel files into the Access database
+# 05 – Remerge exported CSV/Excel files into the Access database
 
-Status: **approved** · Size: L · Live data: **YES – writes to an Access database** (preview + confirmation required)
+Status: **done** · Size: L · Live data: **YES – writes to an Access database** (preview + confirmation required)
 
 ## Goal
 

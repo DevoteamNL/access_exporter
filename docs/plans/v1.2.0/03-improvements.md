@@ -1,6 +1,6 @@
-﻿# 03 – Improvements (pick list)
+# 03 – Improvements (pick list)
 
-Status: **approved** · Size: S–M (depends on selection) · Live data: no
+Status: **done** · Size: S–M (depends on selection) · Live data: no
 
 Found while reviewing v1.1.0. The PO picks which items go into v1.2.0; **A** is recommended as a prerequisite for
 plans 04 and 05.

@@ -1,6 +1,6 @@
-﻿# 01 – Application icon
+# 01 – Application icon
 
-Status: **approved** · Size: S · Live data: no
+Status: **done** · Size: S · Live data: no
 
 ## Goal
 

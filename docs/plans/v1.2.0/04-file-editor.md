@@ -1,6 +1,6 @@
-﻿# 04 – Built-in file editor (CSV/XLSX)
+# 04 – Built-in file editor (CSV/XLSX)
 
-Status: **approved** · Size: M–L · Live data: edits export files only (never the `.accdb`)
+Status: **done** · Size: M–L · Live data: edits export files only (never the `.accdb`)
 
 ## Goal
 

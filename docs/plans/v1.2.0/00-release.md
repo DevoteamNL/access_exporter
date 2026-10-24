@@ -1,6 +1,6 @@
-﻿# Release plan – Access Exporter v1.2.0
+# Release plan – Access Exporter v1.2.0
 
-Status: **approved**
+Status: **done**
 GitHub issue: #2
 
 ## Request (PO, verbatim)
@@ -67,3 +67,16 @@ One PR per plan, each linking its issue.
 - Access-table editing (04) and merge (05) share one write path: copy the database to the Save-as target, then
   apply changes in one transaction on the copy.
 - README split: `README.md` (EN, with language links), `README.nl.md`, `README.fr.md`.
+
+## Outcome (implementation notes)
+
+All plans 01–06 and improvements A–I are implemented. Deviations from the plans:
+
+- A: the code became the package `access_exporter/` (`core.py`, `file_io.py`, `merge.py`, `worker.py`, `dialogs.py`,
+  `main_window.py`, `editor_tab.py`, `merge_tab.py`, `themes.py`, `translations.py`) instead of flat modules;
+  `access_exporter_pyqt6.py` stays the entry point and re-exports the old names.
+- 04: per PO decision the editor also edits Access databases directly; saving always writes a new, timestamped copy.
+- 05: the manifest is written as `<export>.xlsx.export.json` / `<export>.csv.export.json` next to the export.
+- 06: a French README (`README.fr.md`) was added next to the English and Dutch ones.
+- A `Tests` workflow now runs on pull requests; the release workflow uses pytest and `build.ps1`, and uploads a
+  SHA256 checksum.

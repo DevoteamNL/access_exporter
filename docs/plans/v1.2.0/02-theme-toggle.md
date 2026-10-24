@@ -1,6 +1,6 @@
-﻿# 02 – Light/dark theme toggle
+# 02 – Light/dark theme toggle
 
-Status: **approved** · Size: M · Live data: no
+Status: **done** · Size: M · Live data: no
 
 ## Goal
 

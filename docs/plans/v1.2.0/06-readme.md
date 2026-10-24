@@ -1,6 +1,6 @@
-﻿# 06 – README completeness (EN + NL)
+# 06 – README completeness (EN + NL)
 
-Status: **approved** · Size: S · Live data: no
+Status: **done** · Size: S · Live data: no
 
 ## Gaps in the current README.md
 
