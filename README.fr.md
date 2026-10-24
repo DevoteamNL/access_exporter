@@ -162,7 +162,7 @@ python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt pytest
 .venv\Scripts\python.exe access_exporter_pyqt6.py        # lancer le programme
 .venv\Scripts\python.exe -m pytest -q tests              # lancer les tests
-.\build.ps1                                              # construire dist\AccessExporter.exe
+powershell -ExecutionPolicy Bypass -File .\build.ps1   # construire dist\AccessExporter.exe
 ```
 
 - Le code se trouve dans le paquet `access_exporter` : `core.py` (accès à la base, sans Qt), `file_io.py`

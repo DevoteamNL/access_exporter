@@ -158,7 +158,7 @@ python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt pytest
 .venv\Scripts\python.exe access_exporter_pyqt6.py        # programma starten
 .venv\Scripts\python.exe -m pytest -q tests              # tests uitvoeren
-.\build.ps1                                              # dist\AccessExporter.exe bouwen
+powershell -ExecutionPolicy Bypass -File .\build.ps1   # dist\AccessExporter.exe bouwen
 ```
 
 - De code staat in het pakket `access_exporter`: `core.py` (databasetoegang, geen Qt), `file_io.py` (Excel/CSV),

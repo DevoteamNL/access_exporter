@@ -233,3 +233,8 @@ def test_icoon_bestaat_en_laadt(qapp):
     icoon = QIcon(str(pad))
     assert not icoon.isNull()
     assert {16, 32, 48, 256} <= {s.width() for s in icoon.availableSizes()}
+
+
+def test_vinkje_voor_selectievakjes_bestaat():
+    assert Path(themes.VINKJE).is_file()
+    assert themes.VINKJE in themes.stylesheet(themes.THEMA_DONKER)
