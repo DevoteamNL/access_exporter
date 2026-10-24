@@ -17,3 +17,7 @@ venv/
 build/
 dist/
 *.spec
+
+# Test cache and export manifests
+.pytest_cache/
+*.export.json
