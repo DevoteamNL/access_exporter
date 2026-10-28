@@ -50,6 +50,17 @@ If a Sonnet or Haiku agent fails the same step twice (tests still red, wrong ans
 and escalate: hand the step with the evidence to the Opus agent (Planner/Reviewer), or tell the user to switch the
 session model to Opus for that step.
 
+## Model hints in plans
+
+Planners tag each implementation step `[Sonnet]` (routine, follows an existing pattern) or `[Opus]` (concurrency,
+live-data writes, security, design choices). Implementers run `[Sonnet]` steps themselves and announce `[Opus]`
+steps so the user can switch the model for just that step.
+
+## Cheapest token is the one not spent on rework
+
+Unclear requirements are the biggest waste. Before planning non-trivial work, run the `grill-me` skill and capture
+numbered acceptance criteria; implementers test each one and reviewers check each one.
+
 ## Also cheap by habit
 
 - Ask for structured, short outputs (tables, `file:line`) instead of prose.
